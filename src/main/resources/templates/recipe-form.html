@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>멋쟁이사자처럼::맛있는레시피</title>
+  <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body class="container">
+<h1 th:text="${recipeDto.id == null ? '🫕 레시피 추가': '🥘레시피 수정'}"></h1>
+<form th:action="${recipeDto.id} == null ? @{/recipes/add} : @{/recipes/edit}" th:object="${recipeDto}" method="post" class="form-container">
+  <input type="hidden" th:field="*{id}" />
+  <div class="form-group">
+    <p>
+      <label>
+        <span>레시피 이름 :</span>
+        <input type="text" th:field="*{title}" />
+      </label>
+    <div class="error" th:text="${#fields.hasErrors('title')} ? ${#fields.errors('title')} : ' '">
+      </p>
+    </div>
+    <div class="form-group">
+      <p>
+        <label>
+          <span>조리법 : </span>
+          <textarea rows="6" th:field="*{description}" ></textarea>
+        </label>
+      </p>
+    </div>
+    <div class="button-group">
+      <button type="submit">저장</button>
+      <a th:href="@{/recipes}" class="btn">취소</a>
+    </div>
+</form>
+</body>
+</html>
