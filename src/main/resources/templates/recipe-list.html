@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>멋쟁이사자처럼::레시피야~</title>
+  <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body class="container">
+
+<div th:replace="~{fragments/topnav :: topnav('🍳 맛있는 레시피 모음')}"></div>
+
+<div class="recipe-grid">
+  <div class="recipe-card" th:each="recipe : ${recipes}">
+    <h2 th:text="${recipe.title}">레시피 제목</h2>
+    <p th:text="${#strings.length(recipe.description) > 60 ? #strings.substring(recipe.description, 0, 60) + '...' : recipe.description}">
+      설명 미리보기
+    </p>
+    <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="view-btn">자세히 보기</a>
+  </div>
+</div>
+
+</body>
+</html>

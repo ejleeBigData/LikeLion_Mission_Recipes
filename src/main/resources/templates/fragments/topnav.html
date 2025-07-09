@@ -1,0 +1,11 @@
+<div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="topnav(title)" class="topnav">
+  <h1 th:text="${title}">기본 제목</h1>
+
+  <nav class="menu-bar">
+    <a class="center" th:href="@{/recipes/add}">🍽️ 새 레시피 등록</a>
+    <div class="right">
+      <a th:href="@{/signup/add}">회원가입</a>
+      <a th:href="@{/login/login}">로그인</a>
+    </div>
+  </nav>
+</div>
