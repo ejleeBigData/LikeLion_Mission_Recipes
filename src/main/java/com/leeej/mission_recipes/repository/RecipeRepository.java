@@ -28,14 +28,7 @@ public class RecipeRepository {
     }
 
     public Recipe findById(int id) {
-        /*String sql = "SELECT r.id AS recipeId, r.title AS title," +
-                " i.name AS name, ri.quantity" +
-                " FROM recipes r " +
-                " JOIN recipe_ingredients ri ON ri.recipe_id = r.id " +
-                " JOIN ingredients i ON i.id = ri.ingredient_id " +
-                " WHERE r.id = ? " +
-                " ORDER BY r.id ";*/
-        String sql = " SELECT * FROM recipes WHERE id = ? ";
+        String sql = " SELECT  id, title, description, created_at FROM recipes WHERE id = ? ";
 
         return jdbcTemplate.queryForObject(sql, recipeRowMapper, id );
     }

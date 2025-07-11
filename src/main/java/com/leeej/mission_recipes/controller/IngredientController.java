@@ -5,6 +5,7 @@ import com.leeej.mission_recipes.dto.RecipeDto;
 import com.leeej.mission_recipes.model.Ingredient;
 import com.leeej.mission_recipes.model.Recipe;
 import com.leeej.mission_recipes.repository.IngredientRepository;
+import com.leeej.mission_recipes.repository.RecipeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,33 +18,51 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class IngredientController {
     private final IngredientRepository ingredientRepository;
+    private final RecipeRepository recipeRepository;
+
+    private void addRecipeDtoToModel(Integer id, Model model) {
+        Recipe recipe = recipeRepository.findById(id);
+        RecipeDto recipeDto = new RecipeDto();
+        recipeDto.setId(recipe.getId());
+        recipeDto.setTitle(recipe.getTitle());
+        recipeDto.setDescription(recipe.getDescription());
+        model.addAttribute("recipeDto", recipeDto);
+    }
+
 
     @GetMapping("/ingredients/add")
-    public String addForm(Model model) {
-        model.addAttribute("ingredientDto", new IngredientDto() );
+    public String showIngredientAddForm(@PathVariable Integer id,Model model) {
 
-        return "recipe-view";
+        model.addAttribute("ingredientDto", new IngredientDto() );
+        addRecipeDtoToModel(id, model);
+
+        return "redirect:/recipes/{id}";
     }
 
     @PostMapping("/ingredients/add")
     public String add(
             @PathVariable Integer id,
             @Valid @ModelAttribute IngredientDto ingredientDto,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            Model model
     ) {
-        if(bindingResult.hasErrors()) return "recipe-view";
+        //재료 저장 실패를 추가
+        if(bindingResult.hasErrors()) {
+            addRecipeDtoToModel(id, model);
+            return "recipe-view";
+        }
 
         ingredientDto.setRecipeId(id);
 
         Ingredient ingredient = Ingredient.builder()
                 .id(ingredientDto.getId())
-                .name(ingredientDto.getName())
+                .name(ingredientDto.getIngredient_name())
                 .quantity(ingredientDto.getQuantity())
                 .recipeId(ingredientDto.getRecipeId())
                 .build();
 
         ingredientRepository.save(ingredient);
 
-        return "redirect:/recipes/" + id;
+        return "redirect:/recipes/{id}";
     }
 }

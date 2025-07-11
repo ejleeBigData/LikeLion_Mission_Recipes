@@ -21,16 +21,15 @@ public class IngredientRepository {
             Ingredient.builder()
                     .recipeId(resultSet.getInt("recipe_id"))
                     .id(resultSet.getInt("id"))
-                    .name(resultSet.getString("name"))
+                    .name(resultSet.getString("ingredient_name"))
                     .quantity(resultSet.getString("quantity"))
                     .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
                     .build();
 
-    public List<Ingredient> findByRecipeId(int recipeId) {
+    public List<Ingredient> findAllByRecipeId(int recipeId) {
         String sql = "SELECT r.id AS recipe_id, " +
-                " r.title AS recipe_title, " +
-                " i.id AS id, " +
-                " i.name AS ingredient_name,"+
+                " r.title , r.created_at, " +
+                " i.id , i.name AS ingredient_name,"+
                 " ri.quantity " +
                 " FROM recipes r " +
                 " JOIN recipe_ingredients ri ON ri.recipe_id = r.id " +
@@ -46,20 +45,22 @@ public class IngredientRepository {
 
         try {
             ingredientId = jdbcTemplate.queryForObject(getIdSql, Integer.class, ingredient.getName());
+
         } catch (EmptyResultDataAccessException e) {
             String insertSql = "INSERT INTO ingredients(name) VALUES (?) RETURNING id";
             ingredientId = jdbcTemplate.queryForObject(insertSql, Integer.class, ingredient.getName());
         }
 
         if (ingredient.getRecipeId() == null) {
-            throw new IllegalArgumentException("recipeId is null. Must not be null.");
+            throw new IllegalArgumentException("[오류]900 : 레시피(ID " + ingredient.getRecipeId() + ") Not Exists.");
         }
 
         String sqlQuan = "INSERT INTO recipe_ingredients(recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)";
+
         return jdbcTemplate.update(sqlQuan,
                 ingredient.getRecipeId(),
                 ingredientId,
-                ingredient.getQuantity() != null ? ingredient.getQuantity() : "");
+                ingredient.getQuantity());
     }
 
 

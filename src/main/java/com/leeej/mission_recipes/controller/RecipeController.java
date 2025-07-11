@@ -1,7 +1,9 @@
 package com.leeej.mission_recipes.controller;
 
+import com.leeej.mission_recipes.dto.IngredientDto;
 import com.leeej.mission_recipes.dto.RecipeDto;
 import com.leeej.mission_recipes.model.Recipe;
+import com.leeej.mission_recipes.repository.IngredientRepository;
 import com.leeej.mission_recipes.repository.RecipeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecipeController {
     private final RecipeRepository recipeRepository;
+    private final IngredientRepository ingredientRepository;
 
     @GetMapping
     public String list(Model model) {
@@ -28,7 +31,7 @@ public class RecipeController {
     }
 
     @GetMapping("/add")
-    public String addForm(Model model) {
+    public String showRecipeAddForm(Model model) {
         model.addAttribute("recipeDto", new RecipeDto() );
 
         return "recipe-form";
@@ -55,12 +58,17 @@ public class RecipeController {
     public String view(@PathVariable Integer id, Model model) {
 
         Recipe recipe = recipeRepository.findById(id);
+
         RecipeDto recipeDto = new RecipeDto();
         recipeDto.setId(recipe.getId());
         recipeDto.setTitle(recipe.getTitle());
         recipeDto.setDescription(recipe.getDescription());
+        recipeDto.setCreatedAt(recipe.getCreatedAt());
 
         model.addAttribute("recipeDto", recipeDto);
+        model.addAttribute("ingredientDto", new IngredientDto() );
+
+        model.addAttribute("ingredients", ingredientRepository.findAllByRecipeId(id));
 
         return "recipe-view";
     }

@@ -14,7 +14,7 @@ public class IngredientDto {
     private Integer id;
 
     @NotBlank(message = "재료를 입력하세요.")
-    private String name;
+    private String ingredient_name;
 
     @NotBlank(message = "재료의 양을 입력하세요.")
     private String quantity;
