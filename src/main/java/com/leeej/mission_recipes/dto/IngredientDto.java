@@ -13,10 +13,10 @@ public class IngredientDto {
     private Integer recipeId;
     private Integer id;
 
-    @NotBlank(message = "재료를 입력하세요.")
+    @NotBlank(message = "재료명 입력.")
     private String ingredient_name;
 
-    @NotBlank(message = "재료의 양을 입력하세요.")
+    @NotBlank(message = "재료양 입력.")
     private String quantity;
 
     private LocalDateTime createdAt;

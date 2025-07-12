@@ -45,4 +45,5 @@ public class RecipeRepository {
 
         return jdbcTemplate.update(sql, recipe.getTitle(), recipe.getDescription(), recipe.getId());
     }
+
 }

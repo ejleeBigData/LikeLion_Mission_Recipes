@@ -27,8 +27,7 @@ public class IngredientRepository {
                     .build();
 
     public List<Ingredient> findAllByRecipeId(int recipeId) {
-        String sql = "SELECT r.id AS recipe_id, " +
-                " r.title , r.created_at, " +
+        String sql = "SELECT r.id AS recipe_id, r.title , r.created_at, " +
                 " i.id , i.name AS ingredient_name,"+
                 " ri.quantity " +
                 " FROM recipes r " +
@@ -39,29 +38,47 @@ public class IngredientRepository {
         return jdbcTemplate.query(sql, recipeRowMapper, recipeId) ;
     }
 
-    public int save(Ingredient ingredient) {
-        String getIdSql = "SELECT id FROM ingredients WHERE name = ?";
-        Integer ingredientId = null;
-
+    /**
+     * 이름으로 재료 ID 조회 (없으면 null 반환)
+     */
+    public Integer findIdByName(String name) {
+        String sql = "SELECT id FROM ingredients WHERE name = ?";
         try {
-            ingredientId = jdbcTemplate.queryForObject(getIdSql, Integer.class, ingredient.getName());
-
+            return jdbcTemplate.queryForObject(sql, Integer.class, name);
         } catch (EmptyResultDataAccessException e) {
-            String insertSql = "INSERT INTO ingredients(name) VALUES (?) RETURNING id";
-            ingredientId = jdbcTemplate.queryForObject(insertSql, Integer.class, ingredient.getName());
+            return null;
         }
-
-        if (ingredient.getRecipeId() == null) {
-            throw new IllegalArgumentException("[오류]900 : 레시피(ID " + ingredient.getRecipeId() + ") Not Exists.");
-        }
-
-        String sqlQuan = "INSERT INTO recipe_ingredients(recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)";
-
-        return jdbcTemplate.update(sqlQuan,
-                ingredient.getRecipeId(),
-                ingredientId,
-                ingredient.getQuantity());
     }
 
+    /**
+     * 새로운 재료 INSERT 후 ID 반환
+     */
+    public Integer insertIngredient(String name) {
+        String sql = "INSERT INTO ingredients(name) VALUES (?) RETURNING id";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name);
+    }
 
+    /**
+     * recipe_ingredients에 INSERT
+     */
+    public int insertRecipeIngredient(Integer recipeId, Integer ingredientId, String quantity) {
+        String sql = "INSERT INTO recipe_ingredients(recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)";
+        return jdbcTemplate.update(sql, recipeId, ingredientId, quantity);
+    }
+
+    /**
+     * recipe_ingredients에 UPDATE (quantity 수정용)
+     */
+    public int updateRecipeIngredient(Integer recipeId, Integer ingredientId, String quantity) {
+        String sql = "UPDATE recipe_ingredients SET quantity = ? WHERE recipe_id = ? AND ingredient_id = ?";
+        return jdbcTemplate.update(sql, quantity, recipeId, ingredientId);
+    }
+
+    /**
+     * 중복 확인 (이미 존재하는 recipe_id + ingredient_id 쌍이 있는지)
+     */
+    public int countRecipeIngredient(Integer recipeId, Integer ingredientId) {
+        String sql = "SELECT COUNT(*) FROM recipe_ingredients WHERE recipe_id = ? AND ingredient_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, recipeId, ingredientId);
+    }
 }

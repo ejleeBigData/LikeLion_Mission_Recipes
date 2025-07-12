@@ -6,6 +6,7 @@ import com.leeej.mission_recipes.model.Ingredient;
 import com.leeej.mission_recipes.model.Recipe;
 import com.leeej.mission_recipes.repository.IngredientRepository;
 import com.leeej.mission_recipes.repository.RecipeRepository;
+import com.leeej.mission_recipes.service.IngredientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class IngredientController {
     private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
+    private final IngredientService ingredientService;
 
     private void addRecipeDtoToModel(Integer id, Model model) {
         Recipe recipe = recipeRepository.findById(id);
@@ -47,10 +49,14 @@ public class IngredientController {
             Model model
     ) {
         //재료 저장 실패를 추가
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("ingredientDto", ingredientDto);
             addRecipeDtoToModel(id, model);
+
+            model.addAttribute("ingredients", ingredientRepository.findAllByRecipeId(id));
             return "recipe-view";
         }
+
 
         ingredientDto.setRecipeId(id);
 
@@ -61,8 +67,19 @@ public class IngredientController {
                 .recipeId(ingredientDto.getRecipeId())
                 .build();
 
-        ingredientRepository.save(ingredient);
+        ingredientService.save(ingredient);
 
         return "redirect:/recipes/{id}";
     }
+
+    @PostMapping("/ingredients/{ingredientId}/remove")
+    public String removeIngredient(
+            @PathVariable Integer id,
+            @PathVariable Integer ingredientId
+    ) {
+        ingredientService.deleteByRecipeIdAndIngredientId(id, ingredientId);
+
+        return "redirect:/recipes/{id}";
+    }
+
 }
