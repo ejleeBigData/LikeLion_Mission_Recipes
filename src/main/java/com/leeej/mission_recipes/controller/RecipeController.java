@@ -54,8 +54,20 @@ public class RecipeController {
         return "redirect:/recipes";
     }
 
+    @PostMapping("/{id}/edit")
+    public String edit(
+        @PathVariable Integer id,
+        @Valid @ModelAttribute RecipeDto recipeDto
+    ) {
+
+
+    }
+
     @GetMapping("/{id}")
-    public String view(@PathVariable Integer id, Model model) {
+    public String view(
+            @PathVariable Integer id,
+            Model model )
+    {
 
         Recipe recipe = recipeRepository.findById(id);
 
@@ -71,5 +83,12 @@ public class RecipeController {
         model.addAttribute("ingredients", ingredientRepository.findAllByRecipeId(id));
 
         return "recipe-view";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteRecipe(@PathVariable Integer id) {
+        recipeRepository.delete(id);
+
+        return "redirect:/";
     }
 }

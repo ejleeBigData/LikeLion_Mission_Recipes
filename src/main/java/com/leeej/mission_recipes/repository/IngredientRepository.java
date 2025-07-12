@@ -38,9 +38,6 @@ public class IngredientRepository {
         return jdbcTemplate.query(sql, recipeRowMapper, recipeId) ;
     }
 
-    /**
-     * 이름으로 재료 ID 조회 (없으면 null 반환)
-     */
     public Integer findIdByName(String name) {
         String sql = "SELECT id FROM ingredients WHERE name = ?";
         try {
@@ -50,33 +47,21 @@ public class IngredientRepository {
         }
     }
 
-    /**
-     * 새로운 재료 INSERT 후 ID 반환
-     */
     public Integer insertIngredient(String name) {
         String sql = "INSERT INTO ingredients(name) VALUES (?) RETURNING id";
         return jdbcTemplate.queryForObject(sql, Integer.class, name);
     }
 
-    /**
-     * recipe_ingredients에 INSERT
-     */
     public int insertRecipeIngredient(Integer recipeId, Integer ingredientId, String quantity) {
         String sql = "INSERT INTO recipe_ingredients(recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)";
         return jdbcTemplate.update(sql, recipeId, ingredientId, quantity);
     }
 
-    /**
-     * recipe_ingredients에 UPDATE (quantity 수정용)
-     */
     public int updateRecipeIngredient(Integer recipeId, Integer ingredientId, String quantity) {
         String sql = "UPDATE recipe_ingredients SET quantity = ? WHERE recipe_id = ? AND ingredient_id = ?";
         return jdbcTemplate.update(sql, quantity, recipeId, ingredientId);
     }
 
-    /**
-     * 중복 확인 (이미 존재하는 recipe_id + ingredient_id 쌍이 있는지)
-     */
     public int countRecipeIngredient(Integer recipeId, Integer ingredientId) {
         String sql = "SELECT COUNT(*) FROM recipe_ingredients WHERE recipe_id = ? AND ingredient_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, recipeId, ingredientId);

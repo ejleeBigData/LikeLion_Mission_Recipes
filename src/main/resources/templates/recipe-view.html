@@ -5,6 +5,12 @@
   <title>멋쟁이사자처럼::맛있는레시피</title>
   <link rel="stylesheet" th:href="@{/styles.css}" />
   <script>
+    function submitRecipe(url) {
+      const form = document.getElementById("recipe-form");
+      form.action = url;
+      form.submit();
+    }
+
     function submitDelete(url, recipe, ingredient) {
       const form = document.getElementById("ingre-form");
       form.action = url;
@@ -18,7 +24,7 @@
 
 <div th:replace="~{fragments/topnav :: topnav('🥩 레시피 보기')}"></div>
 
-<form th:action="@{/recipes/edit}" method="post" class="form-container" >
+<form th:action="@{/recipes/edit}" method="post" class="form-container" id="recipe-form">
   <input type="hidden" th:field="${recipeDto.id}" name="recipe_id"/>
     <label>
       <span th:text="${recipeDto.title}"></span>
@@ -31,8 +37,11 @@
             <span class="ingredient-name" th:text="${ingredient.name}">재료명</span>
             <span class="ingredient-quantity" th:text="${ingredient.quantity}">재료양</span>
           </span>
-          <a th:onclick="'submitDelete(\'/recipes/' + ${recipeDto.id} + '/ingredients/' + ${ingredient.id} + '/remove\', ' + ${recipeDto.id} + ', ' + ${ingredient.id} + ');'"
-             href="javascript:void(0)" class="small-button">재료 삭제</a>
+          <button type="button"
+                  th:onclick="|submitDelete('/recipes/${recipeDto.id}/ingredients/${ingredient.id}/remove', ${recipeDto.id}, ${ingredient.id})|"
+                  class="small-button">
+            재료 삭제
+          </button>
         </li>
       </ul>
 
@@ -42,8 +51,8 @@
     </label>
 
     <div class="button-group">
-      <button type="submit">수정</button>
-      <a th:href="@{'/recipes/delete/' + ${recipeDto.id} }" class="btn">삭제</a>
+      <button type="button" th:onclick="|submitRecipe('/recipes/${recipeDto.id}/edit')|">수정</button>
+      <button type="button" th:onclick="|submitRecipe('/recipes/${recipeDto.id}/delete')|">삭제</button>
       <a th:href="@{/recipes}" class="btn">목록</a>
     </div>
 </form>
@@ -56,12 +65,12 @@
   <label>
     양 : <input type="text" name="quantity"/>
   </label>
-  <button type="submit">재료 추가</button>
+  <button type="submit">추가/수정</button>
   <span class="small-error" th:if="${#fields.hasErrors('ingredient_name')}" th:errors="*{ingredient_name}"></span>
   <span class="small-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
 </form>
 
-<form method="post" id="ingre-form">
+<form method="post" id="ingre-form" style="display: none;">
   <input type="hidden" name="recipe_id"/>
   <input type="hidden" name="id" />
 </form>

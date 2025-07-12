@@ -46,4 +46,8 @@ public class RecipeRepository {
         return jdbcTemplate.update(sql, recipe.getTitle(), recipe.getDescription(), recipe.getId());
     }
 
+    public int delete(Integer id) {
+        String sql = " DELETE FROM recipes WHERE id = ? ";
+        return jdbcTemplate.update(sql, id);
+    }
 }

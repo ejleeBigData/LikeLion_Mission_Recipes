@@ -255,7 +255,19 @@ ul.ingredient-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 2px 0 2px 10px;
+  margin: 0px 0px 2px 10px;
+}
+
+ul.ingredient-list button {
+  font-size: 16px;
+  padding: 4px 12px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e3c9c1;
+  color: #5a4e4d;
+  cursor: pointer;
+  transition: background 0.3s;s
 }
 
 .ingredient-info {
@@ -273,7 +285,6 @@ ul.ingredient-list li {
   color: #ad5389;
   font-size: 14px;
 }
-
 
 .small-date {
   font-size: 12px;
