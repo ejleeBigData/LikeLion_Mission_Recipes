@@ -59,10 +59,10 @@
 <form th:action="@{/recipes/{id}/ingredients/add(id=${recipeDto.id})}" th:object="${ingredientDto}" method="post" class="form-container-s">
   <input type="hidden" th:name="recipeId" th:value="${recipeDto.id}" />
    <label>
-    재료 : <input type="text" name="ingredient_name"/>
+    재료 : <input type="text" th:field="*{ingredient_name}" />
   </label>
   <label>
-    양 : <input type="text" name="quantity"/>
+    양 : <input type="text" th:field="*{quantity}" />
   </label>
   <button type="submit">추가/수정</button>
   <span class="small-error" th:if="${#fields.hasErrors('ingredient_name')}" th:errors="*{ingredient_name}"></span>
