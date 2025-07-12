@@ -11,8 +11,8 @@
       form.submit();
     }
 
-    function submitDelete(url, recipe, ingredient) {
-      const form = document.getElementById("ingre-form");
+    function IngredientDelete(url, recipe, ingredient) {
+      const form = document.getElementById("ingredient-form");
       form.action = url;
       form.querySelector("input[name='recipe_id']").value = recipe;
       form.querySelector("input[name='id']").value = ingredient;
@@ -25,7 +25,6 @@
 <div th:replace="~{fragments/topnav :: topnav('🥩 레시피 보기')}"></div>
 
 <form th:action="@{/recipes/edit}" method="post" class="form-container" id="recipe-form">
-  <input type="hidden" th:field="${recipeDto.id}" name="recipe_id"/>
     <label>
       <span th:text="${recipeDto.title}"></span>
       <small th:text="${#temporals.format(recipeDto.createdAt, 'yyyy-MM-dd HH:mm')}" class="small-date">></small>
@@ -38,7 +37,7 @@
             <span class="ingredient-quantity" th:text="${ingredient.quantity}">재료양</span>
           </span>
           <button type="button"
-                  th:onclick="|submitDelete('/recipes/${recipeDto.id}/ingredients/${ingredient.id}/remove', ${recipeDto.id}, ${ingredient.id})|"
+                  th:onclick="|IngredientDelete('/recipes/${recipeDto.id}/ingredients/${ingredient.id}/remove', ${recipeDto.id}, ${ingredient.id})|"
                   class="small-button">
             재료 삭제
           </button>
@@ -70,7 +69,7 @@
   <span class="small-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
 </form>
 
-<form method="post" id="ingre-form" style="display: none;">
+<form method="post" id="ingredient-form" style="display: none;">
   <input type="hidden" name="recipe_id"/>
   <input type="hidden" name="id" />
 </form>

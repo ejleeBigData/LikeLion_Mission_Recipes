@@ -77,7 +77,8 @@ public class RecipeController {
     public String update(
             @PathVariable Integer id,
             @Valid @ModelAttribute RecipeDto recipeDto,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            Model model
     ) {
         if(bindingResult.hasErrors()) return "recipe-form";
 
@@ -89,7 +90,12 @@ public class RecipeController {
 
         recipeRepository.update(recipe);
 
-        return "redirect:/";
+        model.addAttribute("recipeDto", recipeDto);
+        model.addAttribute("ingredientDto", new IngredientDto() );
+
+        model.addAttribute("ingredients", ingredientRepository.findAllByRecipeId(id));
+
+        return "recipe-view";
     }
 
     @GetMapping("/{id}")

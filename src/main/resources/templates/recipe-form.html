@@ -7,9 +7,9 @@
 </head>
 <body class="container">
 
-<div th:replace="~{fragments/topnav :: topnav('🫕 레시피 추가')}"></div>
+<div th:replace="~{fragments/topnav :: topnav(${recipeDto.id} == null ? '🫕 레시피 추가': '🧂레시피 수정')}"></div>
 
-<form th:action="${recipeDto.id} == null ? @{'/recipes/add'} : @{'/recipes/' + ${recipeDto.id}+ '/edit'}"
+<form th:action="${recipeDto.id} == null ? @{/recipes/add} : @{'/recipes/' + ${recipeDto.id} + '/edit'}"
       th:object="${recipeDto}" method="post" class="form-container">
   <input type="hidden" th:field="*{id}" />
   <div class="form-group">
@@ -29,7 +29,7 @@
 
   <div class="button-group">
     <button type="submit">저장</button>
-    <a th:href="@{/recipes}" class="btn">취소</a>
+    <a th:href="${recipeDto.id} == null ? @{/recipes}: @{'/recipes/' + ${recipeDto.id} }" class="btn">취소</a>
   </div>
 </form>
 </body>
