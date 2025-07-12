@@ -35,8 +35,6 @@ public class IngredientService {
         }
     }
 
-
-
     @Transactional
     public void deleteByRecipeIdAndIngredientId(Integer recipeId, Integer ingredientId) {
         String sqlByRecipeIdAndIngredientId = "DELETE FROM recipe_ingredients WHERE recipe_id = ? AND ingredient_id = ?";

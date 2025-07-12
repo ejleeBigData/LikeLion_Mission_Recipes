@@ -9,7 +9,8 @@
 
 <div th:replace="~{fragments/topnav :: topnav('🫕 레시피 추가')}"></div>
 
-<form th:action="@{/recipes/add}" th:object="${recipeDto}" method="post" class="form-container">
+<form th:action="${recipeDto.id} == null ? @{'/recipes/add'} : @{'/recipes/' + ${recipeDto.id}+ '/edit'}"
+      th:object="${recipeDto}" method="post" class="form-container">
   <input type="hidden" th:field="*{id}" />
   <div class="form-group">
      <label>

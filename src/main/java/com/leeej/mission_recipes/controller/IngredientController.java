@@ -48,7 +48,6 @@ public class IngredientController {
             BindingResult bindingResult,
             Model model
     ) {
-        //재료 저장 실패를 추가
         if (bindingResult.hasErrors()) {
             model.addAttribute("ingredientDto", ingredientDto);
             addRecipeDtoToModel(id, model);
@@ -56,7 +55,6 @@ public class IngredientController {
             model.addAttribute("ingredients", ingredientRepository.findAllByRecipeId(id));
             return "recipe-view";
         }
-
 
         ingredientDto.setRecipeId(id);
 

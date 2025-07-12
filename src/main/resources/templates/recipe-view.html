@@ -51,7 +51,7 @@
     </label>
 
     <div class="button-group">
-      <button type="button" th:onclick="|submitRecipe('/recipes/${recipeDto.id}/edit')|">수정</button>
+      <a th:href="@{'/recipes/' + ${recipeDto.id} + '/edit'}" class="btn">수정</a>
       <button type="button" th:onclick="|submitRecipe('/recipes/${recipeDto.id}/delete')|">삭제</button>
       <a th:href="@{/recipes}" class="btn">목록</a>
     </div>

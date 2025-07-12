@@ -7,6 +7,7 @@ import com.leeej.mission_recipes.repository.IngredientRepository;
 import com.leeej.mission_recipes.repository.RecipeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +32,8 @@ public class RecipeController {
     }
 
     @GetMapping("/add")
-    public String showRecipeAddForm(Model model) {
+    public String addForm(Model model) {
+
         model.addAttribute("recipeDto", new RecipeDto() );
 
         return "recipe-form";
@@ -54,13 +56,40 @@ public class RecipeController {
         return "redirect:/recipes";
     }
 
-    @PostMapping("/{id}/edit")
-    public String edit(
+    @GetMapping("/{id}/edit")
+    public String editForm(
         @PathVariable Integer id,
-        @Valid @ModelAttribute RecipeDto recipeDto
+        Model model
     ) {
+        Recipe recipe = recipeRepository.findById(id);
 
+        RecipeDto recipeDto = new RecipeDto();
+        recipeDto.setId(recipe.getId());
+        recipeDto.setTitle(recipe.getTitle());
+        recipeDto.setDescription(recipe.getDescription());
 
+        model.addAttribute("recipeDto", recipeDto);
+
+        return "recipe-form";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String update(
+            @PathVariable Integer id,
+            @Valid @ModelAttribute RecipeDto recipeDto,
+            BindingResult bindingResult
+    ) {
+        if(bindingResult.hasErrors()) return "recipe-form";
+
+        Recipe recipe = Recipe.builder()
+                .id(recipeDto.getId())
+                .title(recipeDto.getTitle())
+                .description(recipeDto.getDescription())
+                .build();
+
+        recipeRepository.update(recipe);
+
+        return "redirect:/";
     }
 
     @GetMapping("/{id}")
