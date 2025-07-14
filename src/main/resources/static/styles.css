@@ -159,6 +159,7 @@ button:hover {
 
 .view-btn:hover {
   background-color: #d3b6ae;
+  text-decoration: none;
 }
 
 .menu-bar {
