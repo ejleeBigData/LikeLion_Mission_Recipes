@@ -22,13 +22,13 @@ public class RecipeRepository {
                     .build();
 
     public List<Recipe> findAll() {
-        String sql = " SELECT id, title, description, created_at " +
+        String sql = " SELECT id, title, description, created_at AT TIME ZONE 'Asia/Seoul' AS created_at  " +
                 " FROM recipes Order by title ";
         return jdbcTemplate.query(sql, recipeRowMapper) ;
     }
 
     public Recipe findById(int id) {
-        String sql = " SELECT  id, title, description, created_at FROM recipes WHERE id = ? ";
+        String sql = " SELECT  id, title, description, created_at AT TIME ZONE 'Asia/Seoul' AS created_at FROM recipes WHERE id = ? ";
 
         return jdbcTemplate.queryForObject(sql, recipeRowMapper, id );
     }
